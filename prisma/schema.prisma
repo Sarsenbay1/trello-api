@@ -14,10 +14,12 @@ datasource db {
 }
 
 model User {
-  id       Int      @id @default(autoincrement())
-  email    String   @unique
+  id       Int       @id @default(autoincrement())
+  email    String    @unique
   password String
   columns  Column[]
+  cards    Card[]
+  comment  Comment[]
 }
 
 model Column {
@@ -30,8 +32,9 @@ model Column {
 
 model Card {
   id       Int       @id @default(autoincrement())
-  title    String
-  content  String?
+  name     String
+  userId   Int
+  user     User      @relation(fields: [userId], references: [id])
   columnId Int
   column   Column    @relation(fields: [columnId], references: [id])
   comments Comment[]
@@ -40,6 +43,8 @@ model Card {
 model Comment {
   id      Int    @id @default(autoincrement())
   content String
+  userId  Int
+  user    User   @relation(fields: [userId], references: [id])
   cardId  Int
   card    Card   @relation(fields: [cardId], references: [id])
 }
