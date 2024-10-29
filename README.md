@@ -15,8 +15,7 @@ Goal 🎯
 ## Requirements
 
 - Node.js v22.0.0
-- PostgreSQL
-- Docker (optionally, to run the database in a container)
+- Docker (optionally, to run the database in a container(PostgreSQL) )
 
 ```bash
 $ docker-compose up
