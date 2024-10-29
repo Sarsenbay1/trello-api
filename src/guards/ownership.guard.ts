@@ -40,7 +40,7 @@ export class OwnershipGuard implements CanActivate {
       : null;
 
     if (!userId || userId != userIdFromJwt) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('User does not own this userId');
     }
 
     if (columnId) {
@@ -57,6 +57,9 @@ export class OwnershipGuard implements CanActivate {
       if (!card || card.userId !== userId) {
         throw new UnauthorizedException('User does not own this card');
       }
+      if (card.columnId !== columnId) {
+        throw new UnauthorizedException('Column does not own this card');
+      }
     }
 
     if (commentId) {
@@ -65,6 +68,10 @@ export class OwnershipGuard implements CanActivate {
       });
       if (!comment || comment.userId !== userId) {
         throw new UnauthorizedException('User does not own this comment');
+      }
+
+      if (comment.cardId !== cardId) {
+        throw new UnauthorizedException('Card does not own this comment');
       }
     }
 

@@ -1,6 +1,7 @@
 import {
   ConflictException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -36,15 +37,18 @@ export class UsersService {
   async signIn(email: string, pass: string): Promise<any> {
     try {
       const user = await this.prisma.user.findUnique({ where: { email } });
+      if (!user) {
+        throw new UnauthorizedException('Incorrect email or password');
+      }
       if (!(await bcrypt.compare(pass, user.password))) {
-        throw new UnauthorizedException();
+        throw new UnauthorizedException('Incorrect email or password');
       }
       const payload = { sub: user.id, email: user.email };
       return {
         access_token: await this.jwtService.signAsync(payload),
       };
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
 
