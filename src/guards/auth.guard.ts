@@ -26,7 +26,7 @@ export class AuthGuard implements CanActivate {
 
     let payload;
     try {
-      const payload = await this.jwtService.verifyAsync(token, {
+      payload = await this.jwtService.verifyAsync(token, {
         secret: this.configService.get<string>('JWT_SECRET'),
       });
     } catch {
@@ -41,7 +41,9 @@ export class AuthGuard implements CanActivate {
       if (!user) {
         throw new UnauthorizedException('User not found');
       }
-    } catch (error) {}
+    } catch {
+      throw new UnauthorizedException();
+    }
 
     return true;
   }
