@@ -1,26 +1,44 @@
 import { Injectable } from '@nestjs/common';
 import { CreateCardDto } from './dto/create-card.dto';
 import { UpdateCardDto } from './dto/update-card.dto';
+import { DatabaseService } from 'src/database/database.service';
+import { Card } from '@prisma/client';
 
 @Injectable()
 export class CardsService {
-  create(createCardDto: CreateCardDto) {
-    return 'This action adds a new card';
+  constructor(private prisma: DatabaseService) {}
+
+  async createCard(
+    createCardDto: CreateCardDto,
+    columnId: number,
+    userId: number,
+  ) {
+    const card = await this.prisma.card.create({
+      data: {
+        name: createCardDto.name,
+        user: { connect: { id: userId } },
+        column: { connect: { id: columnId } },
+      },
+    });
+    return card;
   }
 
-  findAll() {
-    return `This action returns all cards`;
+  async getAllCards(columnId: number): Promise<Card[]> {
+    const cards = await this.prisma.card.findMany({ where: { columnId } });
+    return cards;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} card`;
+  async getOneCard(id: number): Promise<Card> {
+    const card = await this.prisma.card.findUnique({ where: { id } });
+
+    return card;
   }
 
-  update(id: number, updateCardDto: UpdateCardDto) {
-    return `This action updates a #${id} card`;
+  async updateCard(id: number, updateCardDto: UpdateCardDto) {
+    return this.prisma.card.update({ where: { id }, data: updateCardDto });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} card`;
+  async removeCard(id: number) {
+    return this.prisma.card.delete({ where: { id } });
   }
 }

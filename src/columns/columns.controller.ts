@@ -41,6 +41,7 @@ export class ColumnsController {
     type: ColumnRto,
     isArray: true,
   })
+  @UseGuards(AuthGuard)
   @Get()
   getAllColumn(@Param('userId', ParseIntPipe) userId: number) {
     return this.columnsService.getAllColumn(userId);
@@ -51,7 +52,7 @@ export class ColumnsController {
     type: ColumnRto,
     isArray: false,
   })
-  @UseGuards(AuthGuard, OwnershipGuard)
+  @UseGuards(AuthGuard)
   @Get(':columnId')
   getOneColumn(@Param('columnId', ParseIntPipe) id: number) {
     console.log('POL');

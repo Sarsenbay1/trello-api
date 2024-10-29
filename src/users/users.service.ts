@@ -48,12 +48,12 @@ export class UsersService {
     }
   }
 
-  findAllUsers() {
-    return this.prisma.user.findMany();
+  async findAllUsers() {
+    return await this.prisma.user.findMany();
   }
 
-  getUserById(id: number) {
-    return this.prisma.user.findUnique({
+  async getUserById(id: number) {
+    return await this.prisma.user.findUnique({
       where: { id },
     });
   }

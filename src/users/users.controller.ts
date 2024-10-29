@@ -47,7 +47,7 @@ export class UsersController {
     type: UserRto,
     isArray: false,
   })
-  @UseGuards(AuthGuard, OwnershipGuard)
+  @UseGuards(AuthGuard)
   @Get(':userId')
   getOneUser(@Param('userId', ParseIntPipe) id: number) {
     return this.usersService.getUserById(id);

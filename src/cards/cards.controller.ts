@@ -1,34 +1,87 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { CardsService } from './cards.service';
 import { CreateCardDto } from './dto/create-card.dto';
 import { UpdateCardDto } from './dto/update-card.dto';
+import { OwnershipGuard } from 'src/guards/ownership.guard';
+import { AuthGuard } from 'src/guards/auth.guard';
+import { ApiOkResponse } from '@nestjs/swagger';
+import { CardRto } from './rto/card.rto';
+import { DeleteCardRto } from './rto/delete-card.rto';
+import { CreateCardRto } from './rto/create-card.rto';
 
-@Controller('cards')
+@Controller('users/:userId/columns/:columnId/cards')
 export class CardsController {
   constructor(private readonly cardsService: CardsService) {}
 
+  @ApiOkResponse({
+    description: 'The create card',
+    type: CreateCardRto,
+    isArray: false,
+  })
+  @UseGuards(AuthGuard, OwnershipGuard)
   @Post()
-  create(@Body() createCardDto: CreateCardDto) {
-    return this.cardsService.create(createCardDto);
+  createCard(
+    @Body() createCardDto: CreateCardDto,
+    @Param('columnId', ParseIntPipe) columnId: number,
+    @Param('userId', ParseIntPipe) userId: number,
+  ) {
+    return this.cardsService.createCard(createCardDto, columnId, userId);
   }
 
+  @ApiOkResponse({
+    description: 'The getting all cards',
+    type: CardRto,
+    isArray: true,
+  })
+  @UseGuards(AuthGuard)
   @Get()
-  findAll() {
-    return this.cardsService.findAll();
+  getAllCards(@Param('columnId', ParseIntPipe) columnId: number) {
+    return this.cardsService.getAllCards(columnId);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.cardsService.findOne(+id);
+  @ApiOkResponse({
+    description: 'The getting one card',
+    type: CardRto,
+    isArray: false,
+  })
+  @UseGuards(AuthGuard)
+  @Get(':cardId')
+  getOneCard(@Param('cardId', ParseIntPipe) id: number) {
+    return this.cardsService.getOneCard(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCardDto: UpdateCardDto) {
-    return this.cardsService.update(+id, updateCardDto);
+  @ApiOkResponse({
+    description: 'The update card',
+    type: CardRto,
+    isArray: false,
+  })
+  @UseGuards(AuthGuard, OwnershipGuard)
+  @Patch(':cardId')
+  updateCard(
+    @Param('cardId', ParseIntPipe) id: number,
+    @Body() updateCardDto: UpdateCardDto,
+  ) {
+    return this.cardsService.updateCard(id, updateCardDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.cardsService.remove(+id);
+  @ApiOkResponse({
+    description: 'The delete card',
+    type: DeleteCardRto,
+    isArray: false,
+  })
+  @UseGuards(AuthGuard, OwnershipGuard)
+  @Delete(':cardId')
+  removeCard(@Param('cardId', ParseIntPipe) id: number) {
+    return this.cardsService.removeCard(id);
   }
 }
