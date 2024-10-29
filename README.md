@@ -13,10 +13,10 @@ Goal 🎯
 
 
 ```bash
-$ npm run docker:up_win postgres
+$ docker-compose up
 
 ## Installation
-
+```
 ```bash
 $ npm install
 ```
