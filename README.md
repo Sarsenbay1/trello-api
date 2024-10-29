@@ -12,6 +12,12 @@ Goal 🎯
 ![{F2E44905-79B2-4F71-ABBA-59D26BC8E1EC}](https://github.com/user-attachments/assets/7c35c98c-cbfa-4d68-b20b-f9e8c5312925)
 
 
+## Requirements
+
+- Node.js v22.0.0
+- PostgreSQL
+- Docker (optionally, to run the database in a container)
+
 ```bash
 $ docker-compose up
 
