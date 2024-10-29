@@ -1,15 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { CreateColumnDto } from './dto/create-column.dto';
 import { UpdateColumnDto } from './dto/update-column.dto';
-import { JwtService } from '@nestjs/jwt';
 import { DatabaseService } from 'src/database/database.service';
 
 @Injectable()
 export class ColumnsService {
-  constructor(
-    private jwtService: JwtService,
-    private prisma: DatabaseService,
-  ) {}
+  constructor(private prisma: DatabaseService) {}
 
   async createColumn(createColumnDto: CreateColumnDto, userId: number) {
     return await this.prisma.column.create({
